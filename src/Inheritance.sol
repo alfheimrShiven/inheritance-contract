@@ -20,16 +20,23 @@ contract Inheritance is IInheritance {
         _;
     }
 
-    constructor(address _heir) payable {
+    modifier zeroAddressCheck(address heir) {
+        require(heir != address(0), "Cannot be a zero address");
+        _;
+    }
+
+    constructor(
+        address _heir
+    ) payable zeroAddressCheck(msg.sender) zeroAddressCheck(_heir) {
         require(msg.value > 0);
         owner = payable(msg.sender);
         heir = payable(_heir);
-        heirAllowanceTime = block.timestamp + 1 minutes;
+        heirAllowanceTime = block.timestamp + 4 weeks;
     }
 
     function withdraw(uint256 amount) external payable onlyOwnerOrHeir {
         if (msg.sender == owner) {
-            heirAllowanceTime += 1 minutes;
+            heirAllowanceTime += 4 weeks;
         }
 
         if (amount > 0) {
@@ -43,16 +50,17 @@ contract Inheritance is IInheritance {
         }
     }
 
-    function allotNewHeir(address newHeir) external onlyOwnerOrHeir {
+    function allotNewHeir(
+        address newHeir
+    ) external onlyOwnerOrHeir zeroAddressCheck(newHeir) {
+        /// @dev Current heir will become the owner to take control of the assets and allot a new heir for himself
         if (msg.sender == heir) {
             owner = payable(msg.sender);
             emit InheritanceTransferredTo(msg.sender);
         }
 
-        require(newHeir != address(0), "Cannot be a zero address");
-
         heir = payable(newHeir);
-        heirAllowanceTime = block.timestamp + 1 minutes;
+        heirAllowanceTime = block.timestamp + 4 weeks;
         emit NewHeirChosen(heir);
     }
 }
