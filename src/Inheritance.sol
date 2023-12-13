@@ -2,6 +2,7 @@
 
 pragma solidity ^0.8.10;
 import {IInheritance} from "interfaces/IInheritance.sol";
+import {console} from "forge-std/console.sol";
 
 contract Inheritance is IInheritance {
     // States //
@@ -11,17 +12,18 @@ contract Inheritance is IInheritance {
 
     modifier onlyOwnerOrHeir() {
         if (msg.sender != owner && msg.sender != heir) {
+            console.log("Owner:", owner);
             revert NotOwnerNorHeir(msg.sender);
         }
 
-        if (msg.sender == heir && block.timestamp <= heirAllowanceTime) {
+        if (msg.sender == heir && block.timestamp < heirAllowanceTime) {
             revert HeirCannotTransactYet();
         }
         _;
     }
 
-    modifier zeroAddressCheck(address heir) {
-        require(heir != address(0), "Cannot be a zero address");
+    modifier zeroAddressCheck(address _heir) {
+        require(_heir != address(0), "Cannot be a zero address");
         _;
     }
 
@@ -47,6 +49,7 @@ contract Inheritance is IInheritance {
 
             (bool success, ) = payable(msg.sender).call{value: amount}("");
             if (success) emit Inherited(msg.sender, amount);
+            else revert("Withdraw failed");
         }
     }
 

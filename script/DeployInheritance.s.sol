@@ -10,7 +10,9 @@ contract DeployInheritance is Script {
         uint256 depositAmount,
         address heir
     ) external payable returns (Inheritance) {
+        vm.startBroadcast(msg.sender);
         Inheritance inheritance = new Inheritance{value: depositAmount}(heir);
+        vm.stopBroadcast();
         return inheritance;
     }
 }
