@@ -28,6 +28,7 @@ interface IInheritance {
      * The existing heir can only call this function post the heir
      * allowance time has crossed. If so, they become the new owner
      * and allot a new heir.
+     * @dev The ownership transfer can also be automated using Chainlink's Upkeeps for a more mature implementation
      * @param newHeir Address of the new heir
      * */
     function allotNewHeir(address newHeir) external;
