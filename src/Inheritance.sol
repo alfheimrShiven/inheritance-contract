@@ -36,7 +36,7 @@ contract Inheritance is IInheritance {
 
     function withdraw(uint256 amount) external payable onlyOwnerOrHeir {
         if (msg.sender == owner) {
-            heirAllowanceTime += 4 weeks;
+            heirAllowanceTime = block.timestamp + 4 weeks;
         }
 
         if (amount > 0) {

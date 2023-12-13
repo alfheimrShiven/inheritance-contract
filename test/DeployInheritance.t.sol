@@ -13,7 +13,7 @@ contract DeployInheritanceTest is Test {
 
     function setUp() external {
         deployer = new DeployInheritance();
-        vm.deal(owner, 10 ether);
+        vm.deal(owner, ASSET_VALUE);
     }
 
     function testRevertDeployingInheritanceWithoutSendingValue() external {
